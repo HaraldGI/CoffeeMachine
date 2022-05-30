@@ -1,12 +1,19 @@
 from menu import MENU
 from menu import resources
 
-# TODO: 6. Make while loop that turns the machine off.
 
-# TODO: 1. Prompt user what they would like: espresso/latte/cappuccino
+change_back = 0
+money_earned = 0
+turnoff = True
 
-your_money = 10
-machine_change = 0
+
+def amount_of_money():
+    print("Please insert coins.")
+    quarters = int(input("how many quarters: ")) * 0.25
+    dimes = int(input("how many dimes: ")) * 0.10
+    nickles = int(input("how many nickles: ")) * 0.05
+    pennies = int(input("how many pennies: ")) * 0.01
+    return round(quarters + dimes + nickles + pennies, 2)
 
 
 def check_resources(coffee_choice):
@@ -16,8 +23,8 @@ def check_resources(coffee_choice):
     else:
         print("Not enough water.")
     if MENU[coffee_choice]['ingredients']['milk'] <= resources['milk']:
-            new_milk = resources['milk'] - MENU[coffee_choice]['ingredients']['milk']
-            resources['milk'] = new_milk
+        new_milk = resources['milk'] - MENU[coffee_choice]['ingredients']['milk']
+        resources['milk'] = new_milk
     else:
         print("Not enough milk.")
     if MENU[coffee_choice]['ingredients']['coffee'] <= resources['coffee']:
@@ -25,27 +32,47 @@ def check_resources(coffee_choice):
         resources['coffee'] = new_coffee
     else:
         print("Not enough coffee")
+    your_money = amount_of_money()
     if your_money >= MENU[coffee_choice]['cost']:
         current_change = your_money - MENU[coffee_choice]['cost']
-        print(f"test {current_change}")
-        return current_change
+        # money_earned = money_earned + MENU[coffee_choice]['cost']
+        return current_change,  # money_earned
+    # Need a way to return money_earned from the buy. So it can be used in the rapport.
     else:
-        print(f"You dont have enough money, here is {your_money}$ back.")
+        print(f"You don't have enough money, here is {your_money}$ back.")
         # TODO: 7. Add a way to deduct from resources after the amount of money needed is checked.
 
+def money_summary(choice):
+    return MENU[choice]['cost'] + money_earned
+
+while turnoff:
+    choice = input("What would you like? espresso/latte/cappuccino")
+    if choice == "off":
+        turnoff = False
+    elif choice == "report":
+        print(f"""The current values are:
+    Water: {resources['water']}
+    Milk: {resources['milk']}
+    Coffee: {resources['coffee']}
+    Money: {money_earned}$""")
+    elif choice == "latte":
+        machine_change = check_resources('latte')
+        change_back = machine_change
+        money_earned = money_summary(choice)
+    elif choice == "espresso":
+        machine_change = check_resources('espresso')
+        change_back = machine_change
+        money_earned = money_summary(choice)
+    elif choice == "cappuccino":
+        machine_change = check_resources('cappuccino')
+        change_back = machine_change
+        print(f"You get {change_back}$ back.")
+        money_earned = money_summary(choice)
+    else:
+        print("Please make a valid choice.")
 
 
-choice = input("What would you like? espresso/latte/cappuccino")
 
-if choice == "report":
-    print(f"""The current values are:
-Water: {resources['water']}
-Milk: {resources['milk']}
-Coffee: {resources['coffee']}
-Change: {your_money}$""")
-elif choice == "latte":
-    machine_change = check_resources('latte')
-    print(f"Your current change is {machine_change}$")
 
 # TODO: 1.1 Check if there is enough resources for the different coffee types.
 
