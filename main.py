@@ -5,7 +5,7 @@ from menu import resources
 
 # TODO: 1. Prompt user what they would like: espresso/latte/cappuccino
 
-your_money = 0
+your_money = 10
 machine_change = 0
 
 
@@ -15,20 +15,24 @@ def check_resources(coffee_choice):
         resources['water'] = new_water
     else:
         print("Not enough water.")
-        if MENU[coffee_choice]['ingredients']['milk'] <= resources['milk']:
+    if MENU[coffee_choice]['ingredients']['milk'] <= resources['milk']:
             new_milk = resources['milk'] - MENU[coffee_choice]['ingredients']['milk']
             resources['milk'] = new_milk
-        else:
-            print("Not enough milk.")
-            if MENU[coffee_choice]['ingredients']['coffee'] <= resources['coffee']:
-                new_coffee = resources['coffee'] - MENU[coffee_choice]['ingredients']['coffee']
-                resources['coffee'] = new_coffee
-            else:
-                print("Not enough coffee")
-                if your_money >= MENU[coffee_choice]['cost']:
-                    machine_change = your_money - MENU[coffee_choice]['cost']
-                    return machine_change
-                # TODO: 7. Add a way to return the change.
+    else:
+        print("Not enough milk.")
+    if MENU[coffee_choice]['ingredients']['coffee'] <= resources['coffee']:
+        new_coffee = resources['coffee'] - MENU[coffee_choice]['ingredients']['coffee']
+        resources['coffee'] = new_coffee
+    else:
+        print("Not enough coffee")
+    if your_money >= MENU[coffee_choice]['cost']:
+        current_change = your_money - MENU[coffee_choice]['cost']
+        print(f"test {current_change}")
+        return current_change
+    else:
+        print(f"You dont have enough money, here is {your_money}$ back.")
+        # TODO: 7. Add a way to deduct from resources after the amount of money needed is checked.
+
 
 
 choice = input("What would you like? espresso/latte/cappuccino")
@@ -38,9 +42,10 @@ if choice == "report":
 Water: {resources['water']}
 Milk: {resources['milk']}
 Coffee: {resources['coffee']}
-Change: {money}$""")
+Change: {your_money}$""")
 elif choice == "latte":
-    check_resources('latte')
+    machine_change = check_resources('latte')
+    print(f"Your current change is {machine_change}$")
 
 # TODO: 1.1 Check if there is enough resources for the different coffee types.
 
